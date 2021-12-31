@@ -23,6 +23,9 @@
     "url": "https://github.com/klover2/qbit-node-sdk/issues"
   },
   "homepage": "https://github.com/klover2/qbit-node-sdk#readme",
+  "files": [
+    "dist"
+  ],
   "dependencies": {},
   "devDependencies": {
     "@types/node": "^13.9.1",

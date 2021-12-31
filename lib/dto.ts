@@ -4,7 +4,7 @@
  */
 export namespace QbitNamespace {
   /** 获取code */
-  export interface IGetCode {
+  export interface IGetCodeOutput {
     status: number;
     data: {
       timestamp: number;
@@ -13,7 +13,7 @@ export namespace QbitNamespace {
     };
   }
   /** 获取access token */
-  export interface IGetAccessToken {
+  export interface IGetAccessTokenOutput {
     status: number;
     data: {
       accessToken: string;
@@ -23,7 +23,7 @@ export namespace QbitNamespace {
     };
   }
   /** 刷新access token  */
-  export interface IRefreshAccessToken {
+  export interface IRefreshAccessTokenOutput {
     status: number;
     data: {
       accessToken: string;

@@ -15,7 +15,7 @@ class Qbit {
   /**
    * 获取code
    */
-  private async getCode(state?: string, redirectUri?: string): Promise<QbitNamespace.IGetCode> {
+  private async getCode(state?: string, redirectUri?: string): Promise<QbitNamespace.IGetCodeOutput> {
     const url = `${this.baseUrl}/open-api/oauth/authorize`;
     return await getRequest(url, {
       clientId: this.clientId,
@@ -26,7 +26,7 @@ class Qbit {
   /**
    * 获取access token
    */
-  public async getAccessToken(state?: string, redirectUri?: string): Promise<QbitNamespace.IGetAccessToken> {
+  public async getAccessToken(state?: string, redirectUri?: string): Promise<QbitNamespace.IGetAccessTokenOutput> {
     const url = `${this.baseUrl}/open-api/oauth/access-token`;
     const codeInfo = await this.getCode(state, redirectUri);
     return await postRequest(url, {
@@ -38,7 +38,7 @@ class Qbit {
   /**
    * 刷新access token
    */
-  public async refreshAccessToken(refreshToken: string): Promise<QbitNamespace.IRefreshAccessToken> {
+  public async refreshAccessToken(refreshToken: string): Promise<QbitNamespace.IRefreshAccessTokenOutput> {
     const url = `${this.baseUrl}/open-api/oauth/refresh-token`;
     return await postRequest(url, {
       clientId: this.clientId,

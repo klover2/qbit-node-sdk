@@ -37,6 +37,62 @@ export namespace QbitManage {
       timestamp: number;
     };
   }
+  export namespace Account {
+    export interface IRegisterInput {
+      phone: string; //	手机号码（需要带国际区号，例如+8616612345678）
+      email: string; //	邮箱
+      name: string; //	企业名
+      legalPerson: string; //	法人名称
+    }
+    export interface IRegisterOutput extends IOutput {
+      data: {
+        accountId: string; //	账户id
+        userId: string; //	user id
+        domain: string; //	domain
+      };
+    }
+    export interface IAccountsInput {
+      id?: string; //	客户Id，如果不传默认是所有Client下的account
+      limit?: number; //	默认 10 条
+      page?: number; //	默认 0
+    }
+    export interface IAccountsOutput extends IOutput {
+      data: {
+        data: QbitModel.AccountModel[];
+        total: number;
+      };
+    }
+  }
+  export namespace User {
+    export interface IUsersInput {
+      id?: string; //	id
+      limit?: number; //	默认 10 条
+      page?: number; //	默认 0
+      accountId: string; //	客户 Id
+    }
+    export interface IUsersOutput extends IOutput {
+      data: {
+        data: QbitModel.UserModel[];
+        total: number;
+      };
+    }
+  }
+  export namespace Balance {
+    export interface IBalancesInput {
+      id?: string; //	id,查询多条以逗号隔开
+      limit?: number; //	默认 10 条
+      page?: number; //	默认 0
+      accountId: string; //	客户 Id（默认将查询账户和子账户数据,如果查询持有人的Balance，则传参是持有人的ID）
+      walletType?: string; //	余额类型
+      subAccount?: string; //	子账户id
+    }
+    export interface IBalancesOutput {
+      data: {
+        data: QbitModel.BalanceModel[];
+        total: number;
+      };
+    }
+  }
   export interface IFile {
     fieldname: string;
     originalname: string;
@@ -48,6 +104,22 @@ export namespace QbitManage {
     filename: string;
     path: string;
     buffer: Buffer;
+  }
+  export namespace Card {
+    export interface ICreateCardsInput {
+      batchCount: number; //	开卡数量
+      cost?: number; //	开卡的金额
+      provider?: EnumManage.QbitCard.ProviderEnum; //	卡段
+      cardAddress?: QbitModel.AddressModel; //	卡地址
+      firstName: string; //	持卡人名
+      lastName: string; //	持卡人姓
+      label?: string; //	标签
+      useType: string; //	使用类别
+      email?: string; //	持卡人邮箱
+    }
+    export interface ICreateCardsOutput {
+      data: boolean;
+    }
   }
 }
 

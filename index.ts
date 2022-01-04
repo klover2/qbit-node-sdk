@@ -1,10 +1,18 @@
+import { Account } from './lib/account';
+import { Balance } from './lib/balance';
 import { QbitManage } from './lib/dto';
+import { User } from './lib/user';
 import { getRequest, postRequest } from './lib/utils/request';
 
 class Qbit {
   private clientId: string;
   private clientSecret: string;
   private baseUrl = 'https://api-global.qbitnetwork.com';
+
+  /** 其他模块接口 */
+  private static accountInstance: Account;
+  private static userInstance: User;
+  private static balanceInstance: Balance;
 
   constructor(clientId: string, clientSecret: string, baseUrl?: string) {
     this.clientId = clientId;
@@ -44,6 +52,30 @@ class Qbit {
       clientId: this.clientId,
       refreshToken,
     });
+  }
+  /**
+   * 获取Account 模块接口
+   */
+  public get account() {
+    if (Qbit.accountInstance) return Qbit.accountInstance;
+    Qbit.accountInstance = new Account(this.baseUrl);
+    return Qbit.accountInstance;
+  }
+  /**
+   * 获取User 模块接口
+   */
+  public get user() {
+    if (Qbit.userInstance) return Qbit.userInstance;
+    Qbit.userInstance = new User(this.baseUrl);
+    return Qbit.userInstance;
+  }
+  /**
+   * 获取Balance 模块接口
+   */
+  public get balance() {
+    if (Qbit.balanceInstance) return Qbit.balanceInstance;
+    Qbit.balanceInstance = new Balance(this.baseUrl);
+    return Qbit.balanceInstance;
   }
 }
 

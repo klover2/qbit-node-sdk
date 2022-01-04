@@ -14,10 +14,8 @@ export const postRequest = async (url: string, params: Record<string, any>, head
       .send(params)
       .set(headers);
     return {
-      status: result.status,
-      data: {
-        ...result.body,
-      },
+      httpStatus: result.status,
+      ...result.body,
     };
   } catch (error) {
     throw error;
@@ -38,10 +36,54 @@ export const getRequest = async (url: string, query: Record<string, any>, header
       .query(query)
       .set(headers);
     return {
-      status: result.status,
-      data: {
-        ...result.body,
-      },
+      httpStatus: result.status,
+      ...result.body,
+    };
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * put 请求
+ * @param env 环境变量
+ * @param url
+ * @param params
+ * @param headers
+ * @returns
+ */
+export const putRequest = async (url: string, params: Record<string, any>, headers: Record<string, any> = {}): Promise<any> => {
+  try {
+    const result = await request
+      .put(url)
+      .send(params)
+      .set(headers);
+    return {
+      httpStatus: result.status,
+      ...result.body,
+    };
+  } catch (error) {
+    throw error;
+  }
+};
+
+/**
+ * delete 请求
+ * @param env 环境变量
+ * @param url
+ * @param params
+ * @param headers
+ * @returns
+ */
+export const delRequest = async (url: string, params: Record<string, any>, headers: Record<string, any> = {}): Promise<any> => {
+  try {
+    const result = await request
+      .delete(url)
+      .send(params)
+      .set(headers);
+    return {
+      httpStatus: result.status,
+      ...result.body,
     };
   } catch (error) {
     throw error;

@@ -7,7 +7,9 @@ import { Readable } from 'stream';
 export namespace QbitManage {
   /** 统一返回 */
   export interface IOutput {
-    status: number;
+    httpStatus: number;
+    code?: number;
+    message?: string;
     data?: any;
   }
   /** 获取code */
@@ -19,8 +21,7 @@ export namespace QbitManage {
     };
   }
   /** 获取access token */
-  export interface IGetAccessTokenOutput {
-    status: number;
+  export interface IGetAccessTokenOutput extends IOutput {
     data: {
       accessToken: string;
       refreshToken: string;
@@ -29,8 +30,7 @@ export namespace QbitManage {
     };
   }
   /** 刷新access token  */
-  export interface IRefreshAccessTokenOutput {
-    status: number;
+  export interface IRefreshAccessTokenOutput extends IOutput {
     data: {
       accessToken: string;
       expiresIn: number;
@@ -59,6 +59,7 @@ export namespace QbitManage {
     export interface IAccountsOutput extends IOutput {
       data: {
         data: QbitModel.AccountModel[];
+        pageTotal: number;
         total: number;
       };
     }
@@ -73,6 +74,7 @@ export namespace QbitManage {
     export interface IUsersOutput extends IOutput {
       data: {
         data: QbitModel.UserModel[];
+        pageTotal: number;
         total: number;
       };
     }
@@ -86,9 +88,10 @@ export namespace QbitManage {
       walletType?: string; //	余额类型
       subAccount?: string; //	子账户id
     }
-    export interface IBalancesOutput {
+    export interface IBalancesOutput extends IOutput {
       data: {
         data: QbitModel.BalanceModel[];
+        pageTotal: number;
         total: number;
       };
     }
@@ -114,11 +117,352 @@ export namespace QbitManage {
       firstName: string; //	持卡人名
       lastName: string; //	持卡人姓
       label?: string; //	标签
-      useType: string; //	使用类别
+      useType?: string; //	使用类别
       email?: string; //	持卡人邮箱
     }
-    export interface ICreateCardsOutput {
+    export interface ICreateCardsOutput extends IOutput {
       data: boolean;
+    }
+    export interface ITransferInInput {
+      accountId?: string; //	客户 Id
+      cardId: string; //	卡id
+      clientTransactionId: string; //		client交易ID(方便关联订单)
+      cost: number; //		转入金额
+    }
+    export interface ITransferInOutput extends IOutput {
+      data: boolean;
+    }
+    export interface ITransferOutInput {
+      accountId?: string; //	客户 Id
+      cardId: string; //	卡id
+      clientTransactionId: string; //		client交易ID(方便关联订单)
+      cost: number; //		转出金额
+    }
+    export interface ITransferOutOutput extends IOutput {
+      data: boolean;
+    }
+    export interface ISuspendCardInput {
+      accountId?: string;
+      cardId: string;
+    }
+    export interface ISuspendCardOutput extends IOutput {
+      data: boolean;
+    }
+    export interface IEnableCardInput {
+      accountId?: string;
+      cardId: string;
+    }
+    export interface IEnableCardOutput extends IOutput {
+      data: boolean;
+    }
+    export interface IDeleteCardInput {
+      accountId?: string;
+      cardId: string;
+    }
+    export interface IDeleteCardOutput extends IOutput {
+      data: boolean;
+    }
+    export interface IFrozenAmountInput {
+      accountId?: string; //	客户 Id
+      cardId: string; //	卡id
+      clientTransactionId: string; //		client交易ID(方便关联订单)
+      cost: number; //		金额
+    }
+    export interface IFrozenAmountOutput extends IOutput {
+      data: boolean;
+    }
+    export interface IUnfrozenAmountInput {
+      accountId?: string; //	客户 Id
+      cardId: string; //	卡id
+      clientTransactionId: string; //		client交易ID(方便关联订单)
+      cost: number; //		金额
+    }
+    export interface IUnfrozenAmountOutput extends IOutput {
+      data: boolean;
+    }
+    export interface ICardsInput {
+      id?: string; //	id
+      limit?: number; //	默认 10 条
+      page?: number; //	默认 0
+      accountId?: string; // 客户 Id
+    }
+    export interface ICardsOutput extends IOutput {
+      data: {
+        data: QbitModel.QbitCardManage.CardModel[];
+        pageTotal: number;
+        total: number;
+      };
+    }
+    export interface ICardInfoInput {
+      accountId?: string;
+      cardId: string;
+    }
+    export interface ICardInfoOutput extends IOutput {
+      data: {
+        qbitCardNo: string;
+        cvv: string;
+        expYear: string;
+        expMonth: string;
+      };
+    }
+    export interface ITransactionsInput {
+      accountId?: string; //	客户ID
+      cardId?: string; //	卡ID
+      page?: number; //	页
+      limit?: number; //	条数
+      type?: string; //	交易类型
+      startTime?: Date; //	交易开始时间
+      endTime?: Date; //	交易结束时间
+      status?: string; //	交易状态
+    }
+    export interface ITransactionsOutput extends IOutput {
+      data: {
+        data: QbitModel.QbitCardManage.CardTransactionModel[];
+        pageTotal: number;
+        total: number;
+      };
+    }
+    export interface IReceiverInput {
+      accountId: string; //	客户 Id
+      firstName?: string; //	名
+      lastName: string; //	姓 、企业全名
+      currency: EnumManage.currencyEnum; //	币种(参考枚举)
+      accountNumber?: string; //	收款方银行账户
+      relationship: EnumManage.GlobalAccount.RelationshipEnum; //	与此账户关系
+      receiverAddress?: QbitModel.AddressModel; //	收款为个人时，为个人地址, 收款为公司时，为收款公司地址(通用地址)
+      bankAddress?: QbitModel.AddressModel; //	银行地址(通用地址)
+      bankName?: string; //	银行名称
+      type?: EnumManage.GlobalAccount.AccountTypeEnum; //	账户类型（对公、对私）(CNY)
+      bankBranchName?: string; //	银行支行名称(CNY)
+      individualNo?: string; //	个人证件号(CNY)
+      businessNo?: string; //	企业证件号（企业统一社会信用代码）(CNY)
+      bic: string; //	bic_swift
+      iban?: string; //	iban(EUR)
+      routingType?: EnumManage.GlobalAccount.RoutingTypeEnum; //	汇款线路
+      routingNumber?: string; //	汇款线路号码
+    }
+    export interface IReceiverOutput extends IOutput {
+      data: QbitModel.QbitCardManage.CardReceiverModel;
+    }
+    export interface IReceiversInput {
+      id?: string; //	id
+      limit?: number; //	默认 10 条
+      page?: number; //	默认 0
+      currency?: string; //	币种
+      accountId: string; //	客户 Id
+    }
+    export interface IReceiversOutput extends IOutput {
+      data: {
+        data: QbitModel.QbitCardManage.CardReceiverModel[];
+        pageTotal: number;
+        total: number;
+      };
+    }
+    export interface ICreateWithdrawInput {
+      accountId: string; //	客户 Id
+      cardId: string; //	卡Id
+      amount: number; //	提现金额
+      clientTransactionId: string; //	系统编号(幂等性）
+      receiverId: string; //	卡收款人ID
+    }
+    export interface ICreateWithdrawOutput extends IOutput {
+      data: true;
+    }
+  }
+  export namespace Global {
+    export interface ICreateHolderInput {
+      accountId: string; //	客户 Id
+      businessName: string; //	企业名称
+      registrationRegion: string; //	企业注册地(CN - 中国大陆, HK - 中国香港)
+      businessCertificate: IFile; //	公司营业执照附件/公司注册证书影印件
+      businessId?: string; //	统一社会信用代码/公司注册编号
+      businessRegistrationDate?: string; //	注册日期
+      businessOperationPeriod?: string; //	营业期限
+      businessRegistrationAddress?: string; //	注册地址
+      businessPersons: QbitModel.GlobalAccountManage.BusinessPersonModel[]; //	企业成员信息
+    }
+    export interface ICreateHolderOutput extends IOutput {
+      data: QbitModel.GlobalAccountManage.GlobalHolderModel;
+    }
+    export interface IDeleteHolderInput {
+      accountId: string; //	客户 Id
+      holderId: string; //	持有人 Id
+    }
+    export interface IDeleteHolderOutput extends IOutput {
+      data: true;
+    }
+    export interface IIsCreateCustomerInput {
+      accountId: string; //	客户 Id
+      holderId: string; //	持有人 Id
+    }
+    export interface IIsCreateCustomerOutput extends IOutput {
+      data: true;
+    }
+    export interface IHoldersInput {
+      accountId: string; //	客户 Id
+      id?: string; //	id
+      limit?: number; //	默认 10 条
+      page?: number; //	默认 0
+    }
+    export interface IIHoldersOutput extends IOutput {
+      data: {
+        data: QbitModel.GlobalAccountManage.GlobalHolderModel[];
+        pageTotal: number;
+        total: number;
+      };
+    }
+    export interface ICreateCddInput {
+      accountId: string; //	客户Id
+      registrationRegion: string; //	企业注册地(CN - 中国大陆, HK - 中国香港)
+      businessCertificate: IFile; //	公司营业执照附件/公司注册证书影印件
+      businessNnc1?: IFile; //	NNC1/最新NAR1(注册地为HK时必填)
+      businessName?: string; //	企业名称
+      businessId?: string; //	统一社会信用代码/公司注册编号
+      businessRegistrationDate?: string; //	注册日期
+      businessOperationPeriod?: string; //	营业期限
+      businessRegistrationAddress?: string; //	注册地址
+      businessPersons: QbitModel.GlobalAccountManage.BusinessPersonModel[]; //	企业成员信息
+    }
+    export interface ICreateCddOutput extends IOutput {
+      data: true;
+    }
+    export interface ICreateSubAccountsInput {
+      accountId: string; //	客户 Id
+      holderId: string; //	持有人 Id
+      currency: string; //	币种
+      purpose: string; //	用途
+      nickname?: string; //	账户昵称
+    }
+    export interface ICreateSubAccountsOutput extends IOutput {
+      data: QbitModel.GlobalAccountManage.GlobalSubAccountModel;
+    }
+    export interface ISubAccountsInput {
+      id?: string; //	id
+      limit?: number; //	默认 10 条
+      page?: number; //	默认 0
+      currency?: string; //	币种
+      accountId: string; //	客户 Id
+      holderId: string; //	持有人 Id
+    }
+    export interface ISubAccountsOutput extends IOutput {
+      data: {
+        data: QbitModel.GlobalAccountManage.GlobalSubAccountModel[];
+        pageTotal: number;
+        total: number;
+      };
+    }
+    export interface IFundingAccountsInput {
+      id: string; //	id
+      limit: number; //	默认 10 条
+      page: number; //	默认 0
+      currency: string; //	币种
+      accountId: string; //	客户 Id
+      holderId: string; //	持有人 Id
+      globalSubAccountId: string; //	全球账户 Id
+    }
+    export interface IFundingAccountsOutput extends IOutput {
+      data: {
+        data: QbitModel.GlobalAccountManage.FundingAccountsModel[];
+        pageTotal: number;
+        total: number;
+      };
+    }
+    export interface ICreateBeneficiaryInput {
+      accountId: string; //	客户 Id
+      holderId: string; //	持有人 Id
+      firstName?: string; //	名
+      lastName: string; //	姓 、企业全名
+      currency: EnumManage.currencyEnum; //	币种(参考枚举)
+      accountNumber?: string; //	收款方银行账户
+      relationship: EnumManage.GlobalAccount.RelationshipEnum; //	与此账户关系
+      receiverAddress?: QbitModel.AddressModel; //	收款为个人时，为个人地址, 收款为公司时，为收款公司地址(通用地址)
+      bankAddress?: QbitModel.AddressModel; //	银行地址(通用地址)
+      bankName?: string; //	银行名称
+      type?: EnumManage.GlobalAccount.AccountTypeEnum; //	账户类型（对公、对私）(CNY)
+      bankBranchName?: string; //	银行支行名称(CNY)
+      individualNo?: string; //	个人证件号(CNY)
+      businessNo?: string; //	企业证件号（企业统一社会信用代码）(CNY)
+      bic: string; //	bic_swift
+      iban?: string; //	iban(EUR)
+      routingType?: EnumManage.GlobalAccount.RoutingTypeEnum; //	汇款线路
+      routingNumber?: string; //	汇款线路号码
+    }
+    export interface ICreateBeneficiaryOutput extends IOutput {
+      data: QbitModel.GlobalAccountManage.BeneficiaryModel;
+    }
+    export interface IBeneficiariesInput {
+      id?: string; //	id
+      limit?: number; //	默认 10 条
+      page?: number; //	默认 0
+      currency?: string; //	币种
+      accountId: string; //	客户 Id
+      holderId: string; //	持有人 Id
+    }
+    export interface IBeneficiariesOutput extends IOutput {
+      data: {
+        data: QbitModel.GlobalAccountManage.BeneficiaryModel[];
+        pageTotal: number;
+        total: number;
+      };
+    }
+    export interface ICreatePaymentInput {
+      accountId: string; //	客户 Id
+      holderId: string; //	持有人 Id
+      balanceId: string; //	出款Bankaccount的余额id
+      receiverId: string; //	收款人ID
+      amount: number; //	付款金额金额
+      clientTransactionId: string; //	Client交易id(方便关联订单)
+      reference: string; //	付款备注
+      appendFee: number; //	调用方追加的手续费
+    }
+    export interface ICreatePaymentOutput extends IOutput {
+      data: boolean;
+    }
+    export interface IBatchCreatePaymentInput {
+      accountId: string; //	客户 Id
+      batchNo: string; //	批量号(方便关联订单)
+      paymentList: ICreatePaymentInput[]; //	批量付款的列表
+    }
+    export interface IBatchCreatePaymentOutput extends IOutput {
+      data: boolean;
+    }
+    export interface IFeeInput {
+      accountId: string; //	客户 Id
+      paymentList: ICreatePaymentInput[]; //	批量付款的列表
+    }
+    export interface IFeeOutput extends IOutput {
+      data: QbitModel.GlobalAccountManage.TransactionFeeModel[];
+    }
+    export interface ITransactionsInput {
+      id?: string; //	id
+      limit?: number; //	默认 10 条
+      page?: number; //	默认 0
+      currency?: string; //	币种
+      clientTransactionId?: string; //	client交易id
+      accountId: string; //	客户 Id
+      holderId: string; //	持有人 Id
+    }
+    export interface ITransactionsOutput extends IOutput {
+      data: {
+        data: QbitModel.GlobalAccountManage.GlobalAccountTransactionModel[];
+        pageTotal: number;
+        total: number;
+      };
+    }
+  }
+  export namespace WebHook {
+    export interface INotificationsInput {
+      id?: string; //	id
+      limit?: number; //	默认 10 条
+      page?: number; //	默认 0
+      accountId: string; //	客户 Id
+    }
+    export interface INotificationsOutput extends IOutput {
+      data: {
+        data: QbitModel.WebHookManage.NotificationModel[];
+        pageTotal: number;
+        total: number;
+      };
     }
   }
 }
@@ -130,7 +474,7 @@ export namespace QbitModel {
   /**
    * Account 模型
    * Account储存客户账户的基础信息，如KYC的状态等。
-   * 它是代表客户账户的最基础model，跟大多数其他models的关联关系都通过Account Id来实现。
+   * 它//代表客户账户的最基础model，跟大多数其他models的关联关系都通过Account Id来实现。
    */
   export interface AccountModel {
     /** 账户 id */
@@ -362,6 +706,14 @@ export namespace QbitModel {
       transactionId: string; //		订单编号
       appendFee: number; //		调用方追加的手续费
     }
+    /** TransactionFee模型 */
+    export interface TransactionFeeModel {
+      amount: number; //	付款金额
+      fee: number; //	手续费
+      originFee: number; //	Qbit手续费
+      appendFee: number; //	调用方追加手续费
+      clientTransactionId: string; //client交易id
+    }
   }
   /** WebHook推送 */
   export namespace WebHookManage {
@@ -462,6 +814,13 @@ export namespace EnumManage {
       cnaps = 'cnaps',
       ifsc = 'ifsc',
       RON = 'RON',
+    }
+    /** 与此账户关系 */
+    export enum RelationshipEnum {
+      SAME_ACCOUNT = 'SAME_ACCOUNT', //(同名账户)
+      ASSOCIATED_SUBJECT = 'ASSOCIATED_SUBJECT', //(关联主体)
+      AGENCY_RELATIONSHIP = 'AGENCY_RELATIONSHIP', //(代理关系、供销关系关联公司)
+      TRADE_RELATIONS = 'TRADE_RELATIONS', //(贸易关系)
     }
     /** 持有人状态 */
     export enum GlobalHolderStatusEnum {

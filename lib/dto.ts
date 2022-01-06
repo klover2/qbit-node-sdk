@@ -13,21 +13,19 @@ export namespace QbitManage {
     data?: any;
   }
   /** 获取code */
-  export interface IGetCodeOutput extends IOutput {
-    data: {
-      timestamp: number;
-      state: string;
-      code: string;
-    };
+  export interface IGetCodeOutput {
+    httpStatus: number;
+    timestamp: number;
+    state?: string;
+    code: string;
   }
   /** 获取access token */
-  export interface IGetAccessTokenOutput extends IOutput {
-    data: {
-      accessToken: string;
-      refreshToken: string;
-      expiresIn: number;
-      timestamp: number;
-    };
+  export interface IGetAccessTokenOutput {
+    httpStatus: number;
+    accessToken: string;
+    refreshToken: string;
+    expiresIn: number;
+    timestamp: number;
   }
   /** 刷新access token  */
   export interface IRefreshAccessTokenOutput extends IOutput {

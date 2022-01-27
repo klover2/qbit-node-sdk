@@ -44,7 +44,6 @@ class Qbit {
   public async getAccessToken(state?: string, redirectUri?: string): Promise<QbitManage.IGetAccessTokenOutput> {
     const url = `${this.baseUrl}/open-api/oauth/access-token`;
     const codeInfo = await this.getCode(state, redirectUri);
-    console.log(codeInfo);
     return await postRequest(url, {
       clientId: this.clientId,
       clientSecret: this.clientSecret,
